@@ -1,0 +1,97 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model TourathNativeExperiences {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  experienceName String?
+  description    String?
+  location       String?
+  price          Float?
+  duration       Int?
+  capacity       Int?
+  availability   Boolean?
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  name        String?
+  description String?
+  price       Float?
+  quantity    Int?
+  category    String?
+  inventories Inventory[]
+}
+
+model Booking {
+  id          String             @id @default(cuid())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  bookingDate DateTime?
+  totalPrice  Float?
+  status      EnumBookingStatus?
+  experience  String?
+  user        User?              @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model Enkidu {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  eventName   String?
+  startDate   DateTime?
+  endDate     DateTime?
+  location    String?
+  description String?
+  capacity    Int?
+  host        String?
+}
+
+model Marketplace {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  productName String?
+  description String?
+  price       Float?
+  stock       Int?
+  category    String?
+  discount    Float?
+}
+
+model Inventory {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  stock             Int?
+  warehouseLocation String?
+  product           Product? @relation(fields: [productId], references: [id])
+  productId         String?
+}
+
+model User {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  firstName String?
+  lastName  String?
+  username  String    @unique
+  email     String?   @unique
+  password  String
+  roles     Json
+  bookings  Booking[]
+}
+
+enum EnumBookingStatus {
+  Option1
+}
